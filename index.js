@@ -207,7 +207,7 @@ async function connectToWA() {
 ✿════ ✦ ✿ ✦ ════✿*`;
                     
                     await conn.sendMessage(conn.user.id, { 
-                        image: { url: `https://i.postimg.cc/xTTgKc2W/IMG-20250801-WA0019.jpg` }, 
+                        image: { url: `https://files.catbox.moe/tbdd5d.jpg` }, 
                         caption: upMessage 
                     });
                     
