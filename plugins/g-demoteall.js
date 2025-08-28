@@ -72,8 +72,8 @@ cmd({
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: config.NEWSLETTER_JID || '120363299029326322@newsletter',
-                    newsletterName: config.OWNER_NAME || '𝖒𝖆𝖗𝖎𝖘𝖊𝖑',
+                    newsletterJid: config.NEWSLETTER_JID || '120363420342566562@newsletter',
+                    newsletterName: config.OWNER_NAME || 'popkid',
                     serverMessageId: 143
                 }
             }
