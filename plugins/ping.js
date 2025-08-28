@@ -25,14 +25,14 @@ const emojiSets = {
     ]
 };
 
-malvin({
+cmd({
     pattern: 'ping',
     alias: ['speed', 'pong','p'],
     desc: 'Check bot\'s response time and status',
     category: 'main',
     react: '⚡',
     filename: __filename
-}, async (malvin, mek, m, { from, sender, reply }) => {
+}, async (cmd, mek, m, { from, sender, reply }) => {
     try {
         // High-resolution start time
         const start = process.hrtime.bigint();
