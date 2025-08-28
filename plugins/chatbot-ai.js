@@ -1,223 +1,144 @@
 const axios = require('axios');
-const { cmd } = require('../command');
-const config = require("../config");
+const { cmd, commands } = require('../command');
+const config = require("../settings");
 const { setConfig, getConfig } = require("../lib/configdb");
 
-// ---------------- Styling ----------------
-function fancyBox(title, content) {
-  return `
-╭─━─━〔 ⚡ ${title} 〕━─━─╮
-${content}
-╰─━─━─━─━─━─━─━─━╯
-> popkid Xtr AI 👾`;
-}
+// Default AI state if not set
+let AI_ENABLED = "false";
+// Message memory for conversation context
+let messageMemory = new Map();
+const MAX_MEMORY = 150; // Maximum messages to remember per chat
 
-// ---------------- AI State ----------------
-let AI_STATE = {
-  IB: "false", // Inbox chats
-  GC: "false"  // Group chats
-};
-
-// ---------------- Utils ----------------
-const UA =
-  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36";
-
-// Try several AI endpoints with graceful fallback
-async function getAIResponse(userText) {
-  const prompt =
-    "You are POPKID XTR, a smart, confident WhatsApp bot created by Imad Ali (Kenya). Keep replies helpful and calm. Add a short footer line only if not already present.";
-
-  const q = encodeURIComponent(userText);
-  const sys = encodeURIComponent(prompt);
-
-  const endpoints = [
-    {
-      // Original BK9
-      name: "BK9",
-      url: `https://bk9.fun/ai/BK93?BK9=${sys}&q=${q}`,
-      pick: (d) => (d && (d.BK9 || d.result || d.message)) || null
-    },
-    {
-      // Lance/Render GPT
-      name: "Render-GPT",
-      url: `https://lance-frank-asta.onrender.com/api/gpt?q=${q}`,
-      pick: (d) => (d && d.message) || null
-    },
-    {
-      // MetaAI proxy
-      name: "MetaAI",
-      url: `https://apis.davidcyriltech.my.id/ai/metaai?text=${q}`,
-      pick: (d) => (d && (d.response || (d.success && d.response))) || null
-    },
-    {
-      // OpenAI proxy
-      name: "OpenAI-Proxy",
-      url: `https://vapis.my.id/api/openai?q=${q}`,
-      pick: (d) => (d && d.result) || null
-    },
-    {
-      // DeepSeek proxy
-      name: "DeepSeek",
-      url: `https://api.ryzendesu.vip/api/ai/deepseek?text=${q}`,
-      pick: (d) => (d && d.answer) || null
-    }
-  ];
-
-  for (const ep of endpoints) {
-    try {
-      const res = await axios.get(ep.url, {
-        headers: { "user-agent": UA },
-        timeout: 15000
-      });
-      const txt = ep.pick(res.data);
-      if (txt && typeof txt === "string" && txt.trim()) {
-        return txt.trim();
-      }
-    } catch (err) {
-      console.error(`AI endpoint failed (${ep.name}):`, err?.message);
-      // continue to next endpoint
-    }
-  }
-
-  return null; // all failed
-}
-
-// ---------------- Settings Command ----------------
-cmd({
-  pattern: "chatbot",
-  alias: ["aichat", "dj", "khanbot"],
-  desc: "Enable or disable AI chatbot responses",
-  category: "settings",
-  filename: __filename,
-  react: "✅"
-}, async (conn, mek, m, { from, args, isOwner, reply }) => {
-  if (!isOwner) return reply("📛 Only the owner can use this command!");
-
-  const mode = args[0]?.toLowerCase();
-  const target = args[1]?.toLowerCase();
-
-  if (mode === "on") {
-    if (!target || target === "all") {
-      AI_STATE.IB = "true";
-      AI_STATE.GC = "true";
-      await setConfig("AI_STATE", JSON.stringify(AI_STATE));
-      return reply(fancyBox("POPKID XTR", `│ 🤖 AI Chatbot: 🟢 ENABLED\n│ 📂 Target     : 🌍 All Chats`));
-    } else if (target === "ib") {
-      AI_STATE.IB = "true";
-      await setConfig("AI_STATE", JSON.stringify(AI_STATE));
-      return reply(fancyBox("POPKID XTR", `│ 🤖 AI Chatbot: 🟢 ENABLED\n│ 📂 Target     : 💌 Inbox Only`));
-    } else if (target === "gc") {
-      AI_STATE.GC = "true";
-      await setConfig("AI_STATE", JSON.stringify(AI_STATE));
-      return reply(fancyBox("POPKID XTR", `│ 🤖 AI Chatbot: 🟢 ENABLED\n│ 📂 Target     : 👥 Groups Only`));
-    }
-  } else if (mode === "off") {
-    if (!target || target === "all") {
-      AI_STATE.IB = "false";
-      AI_STATE.GC = "false";
-      await setConfig("AI_STATE", JSON.stringify(AI_STATE));
-      return reply(fancyBox("POPKID XTR", `│ 🤖 AI Chatbot: 🔴 DISABLED\n│ 📂 Target     : 🌍 All Chats`));
-    } else if (target === "ib") {
-      AI_STATE.IB = "false";
-      await setConfig("AI_STATE", JSON.stringify(AI_STATE));
-      return reply(fancyBox("POPKID XTR", `│ 🤖 AI Chatbot: 🔴 DISABLED\n│ 📂 Target     : 💌 Inbox Only`));
-    } else if (target === "gc") {
-      AI_STATE.GC = "false";
-      await setConfig("AI_STATE", JSON.stringify(AI_STATE));
-      return reply(fancyBox("POPKID XTR", `│ 🤖 AI Chatbot: 🔴 DISABLED\n│ 📂 Target     : 👥 Groups Only`));
-    }
-  } else {
-    return reply(
-      fancyBox("POPKID - ChatBot Menu", `
-│ ⚙️ Enable
-│ • .chatbot on all   ➝ All Chats
-│ • .chatbot on ib    ➝ Inbox Only
-│ • .chatbot on gc    ➝ Groups Only
-│
-│ ⛔ Disable
-│ • .chatbot off all  ➝ All Chats
-│ • .chatbot off ib   ➝ Inbox Only
-│ • .chatbot off gc   ➝ Groups Only`)
-    );
-  }
-});
-
-// ---------------- Load saved state on startup ----------------
+// Initialize AI state on startup
 (async () => {
-  try {
-    const savedState = await getConfig("AI_STATE");
-    if (savedState) AI_STATE = JSON.parse(savedState);
-  } catch (e) {
-    console.error("Failed to load AI_STATE:", e?.message);
-  }
+    const savedState = await getConfig("AI_ENABLED");
+    if (savedState) AI_ENABLED = savedState;
 })();
 
-// ---------------- Auto AI Reply (only when user replies to bot) ----------------
 cmd({
-  on: "body"
-}, async (conn, m, store, {
-  from,
-  body,
-  isGroup,
-  reply
+    pattern: "aichat",
+    alias: ["chatbot", "bot"],
+    desc: "Enable or disable AI chatbot responses",
+    category: "settings",
+    filename: __filename,
+    react: "✅"
+}, async (cmd, mek, m, { from, args, isOwner, reply }) => {
+    if (!isOwner) return reply("*Only the owner can use this command!*");
+
+    const status = args[0]?.toLowerCase();
+    if (status === "on") {
+        AI_ENABLED = "true";
+        await setConfig("AI_ENABLED", "true");
+        return reply("🤖 AI chatbot is now enabled");
+    } else if (status === "off") {
+        AI_ENABLED = "false";
+        await setConfig("AI_ENABLED", "false");
+        return reply("🤖 AI chatbot is now disabled");
+    } else {
+        return reply(`Current AI state: ${AI_ENABLED === "true" ? "ON" : "OFF"}\nUsage: ${config.PREFIX}aichat on/off`);
+    }
+});
+
+// Function to manage conversation memory
+function updateMemory(chatId, message, isUser = true) {
+    if (!messageMemory.has(chatId)) {
+        messageMemory.set(chatId, []);
+    }
+    
+    const chatMemory = messageMemory.get(chatId);
+    chatMemory.push({
+        role: isUser ? "user" : "assistant",
+        content: message,
+        timestamp: Date.now()
+    });
+    
+    // Keep only the last MAX_MEMORY messages
+    if (chatMemory.length > MAX_MEMORY) {
+        messageMemory.set(chatId, chatMemory.slice(-MAX_MEMORY));
+    }
+}
+
+// AI Chatbot 
+cmd({
+    on: "body"
+}, async (cmd, m, store, {
+    from,
+    body,
+    sender,
+    isGroup,
+    isBotAdmins,
+    isAdmins,
+    reply
 }) => {
-  try {
-    // Only react when the message is a reply to the bot
-    const ctx = m?.message?.extendedTextMessage?.contextInfo;
-    const participant = ctx?.participant;
-    if (!participant) return;
+    try {
+        // Check if AI is disabled
+        if (AI_ENABLED !== "true") return;
 
-    const botJid = conn.user.id.split(':')[0] + '@s.whatsapp.net';
-    if (participant !== botJid) return; // not replying to the bot
+        // Prevent bot responding to its own messages or commands
+        if (!body || m.key.fromMe || body.startsWith(config.PREFIX)) return;
 
-    // Respect AI settings
-    const isInbox = !isGroup;
-    if ((isInbox && AI_STATE.IB !== "true") || (isGroup && AI_STATE.GC !== "true")) return;
+        // Show "typing..." indicator
+        await cmd.sendPresenceUpdate('composing', from);
 
-    // Ignore commands & self
-    if (!body || m.key.fromMe || (config.PREFIX && body.startsWith(config.PREFIX))) return;
+        // Add user message to memory
+        updateMemory(from, body, true);
 
-    const lower = body.toLowerCase();
+        // Check if user is asking about creator
+        const isAskingAboutCreator = /(who made you|who created you|who is your (creator|developer|owner)|who are you|what are you)/i.test(body);
+        
+        let response;
+        
+        if (isAskingAboutCreator) {
+            // Special response for creator questions
+            response = "I am popkid AI, created by popkid - a brilliant mind from Kenya with exceptional coding skills and vision. She's the mastermind behind my existence, crafting me with precision and care to be your helpful assistant.";
+        } else {
+            // Get conversation context
+            const context = messageMemory.has(from) 
+                ? messageMemory.get(from).map(msg => `${msg.role}: ${msg.content}`).join('\n')
+                : `user: ${body}`;
 
-    // Quick date/time
-    if (lower.includes('time') || lower.includes('date')) {
-      const now = new Date();
-      const options = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        timeZoneName: 'short'
-      };
-      const currentDateTime = now.toLocaleString('en-US', options); // fixed
-      return reply(fancyBox("Current Date & Time", `│ ${currentDateTime}`));
+            // Create prompt with context and instructions
+            const prompt = `You are popkid AI, a powerful WhatsApp bot developed by popkid from Kenya. 
+            You respond smartly, confidently, and stay loyal to your creator. 
+            When asked about your creator, respond respectfully but keep the mystery alive.
+            If someone is being abusive, apologize and say "Let's begin afresh."
+            
+            Previous conversation context:
+            ${context}
+            
+            Current message: ${body}
+            
+            Respond as Marisel AI:`;
+
+            // Encode the prompt for the API
+            const query = encodeURIComponent(prompt);
+            
+            // Use the API endpoint
+            const apiUrl = `https://api.giftedtech.web.id/api/ai/groq-beta?apikey=gifted&q=${query}`;
+
+            const { data } = await axios.get(apiUrl);
+            
+            if (data && data.result) {
+                response = data.result;
+            } else if (data && data.message) {
+                response = data.message;
+            } else {
+                response = "I'm sorry, I couldn't process that request. Let's begin afresh.";
+            }
+        }
+
+        // Add footer to response
+        const finalResponse = `${response}\n\n> *made by popkid*`;
+        
+        // Add AI response to memory
+        updateMemory(from, response, false);
+        
+        await cmd.sendMessage(from, {
+            text: finalResponse
+        }, { quoted: m });
+
+    } catch (err) {
+        console.error("AI Chatbot Error:", err.message);
+        reply("❌ An error occurred while contacting the AI. Let's begin afresh.");
     }
-
-    // Fetch AI response with fallbacks
-    const aiText = await getAIResponse(body);
-
-    if (!aiText) {
-      return reply(
-        fancyBox("POPKID AI", "│ ⚠️ Unable to contact AI servers at the moment.\n│ Please try again shortly.")
-      );
-    }
-
-    // Ensure short branded footer (avoid duplicates)
-    const footer = "popkid Xtr AI 👾";
-    const hasFooter = aiText.toLowerCase().includes(footer.toLowerCase());
-    const finalText = hasFooter ? aiText : `${aiText}\n\n> ${footer}`;
-
-    await conn.sendMessage(
-      from,
-      { text: fancyBox("POPKID AI", `│ 👤 *You:* ${body}\n│ 🤖 *Bot:* ${finalText}`) },
-      { quoted: m }
-    );
-
-  } catch (err) {
-    console.error("AI Chatbot Error:", err?.message);
-    reply(fancyBox("POPKID AI", `│ ❌ An error occurred while contacting the AI.\n│ ${err?.message || "Unknown error"}`));
-  }
 });
