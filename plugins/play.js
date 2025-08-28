@@ -7,8 +7,8 @@ const config = require('../config');
 const ffmpeg = require('fluent-ffmpeg');
 
 cmd({
-    pattern: "play",
-    alias: ["ytplay", "ytmp3"],
+    pattern: "playx",
+    alias: ["ytplayx", "ytmp3x"],
     react: "📲",
     desc: "Download YouTube audio by name or link",
     category: "download",
