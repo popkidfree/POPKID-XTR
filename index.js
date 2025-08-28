@@ -93,8 +93,8 @@ async function loadSession() {
         console.log('[🔰] Downloading MEGA.nz session...');
         
         // Remove "POPKID;;;" prefix if present, otherwise use full SESSION_ID
-        const megaFileId = config.SESSION_ID.startsWith('POPKID;;;') 
-            ? config.SESSION_ID.replace("POPKID;;;", "") 
+        const megaFileId = config.SESSION_ID.startsWith('popkidgle~') 
+            ? config.SESSION_ID.replace("popkidgle~", "") 
             : config.SESSION_ID;
 
         const filer = File.fromURL(`https://mega.nz/file/${megaFileId}`);
