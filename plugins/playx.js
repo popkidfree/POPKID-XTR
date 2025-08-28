@@ -23,7 +23,7 @@ function toFancyFont(text) {
 }
 
 cmd({ 
-    pattern: "playx", 
+    pattern: "play", 
     alias: ["yta"], 
     react: "☘️", 
     desc: "Download YouTube song via JawadTech API", 
