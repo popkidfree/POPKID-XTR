@@ -46,7 +46,7 @@ cmd({
         const maxAttempts = 2;
         while (attempts < maxAttempts) {
             try {
-                await malvin.sendMessage(from, { react: { text: reactionEmoji, key: mek.key } });
+                await cmd.sendMessage(from, { react: { text: reactionEmoji, key: mek.key } });
                 break;
             } catch (reactError) {
                 attempts++;
@@ -140,6 +140,6 @@ ${loadingBar}
     } catch (e) {
         console.error('❌ Ping command error:', e);
         await reply(`❌ Error: ${e.message || 'Failed to process ping command'}`);
-        await malvin.sendMessage(from, { react: { text: '❌', key: mek.key } });
+        await cmd.sendMessage(from, { react: { text: '❌', key: mek.key } });
     }
 });
