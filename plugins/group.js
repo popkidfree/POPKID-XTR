@@ -1,7 +1,7 @@
 // ==========================
 // Required Modules
 // ==========================
-const config = require('../confog');
+const config = require('../config');
 const { cmd } = require('../command');
 const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('../lib/functions');
 
