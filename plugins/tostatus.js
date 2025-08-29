@@ -1,5 +1,8 @@
 const { cmd } = require("../command");
 const { downloadContentFromMessage, getContentType } = require("@whiskeysockets/baileys");
+// Make sure you import your client instance here
+// Example: if your bot instance is exported from ../popkid
+const { malvin } = require("../popkid");
 
 cmd({
   pattern: "post",
@@ -12,18 +15,18 @@ cmd({
   try {
     if (!isOwner) return reply("🚫 *Owner-only command.*");
 
-    const quoted = m.quoted || m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-    if (!quoted || !quoted.message) {
+    // Only use m.quoted (avoid raw contextInfo mess)
+    const quoted = m.quoted;
+    if (!quoted) {
       return reply("⚠️ *Please reply to an image, video, or audio message to post to status.*");
     }
 
-    const msg = quoted.message || quoted;
-    const type = getContentType(msg);
-    const mediaMsg = msg[type];
-
+    const type = getContentType(quoted.message);
     if (!["imageMessage", "videoMessage", "audioMessage"].includes(type)) {
       return reply("❌ *Unsupported media. Reply to image, video, or audio only.*");
     }
+
+    const mediaMsg = quoted.message[type];
 
     // Download content
     const stream = await downloadContentFromMessage(mediaMsg, type.replace("Message", "").toLowerCase());
@@ -31,7 +34,7 @@ cmd({
     for await (const chunk of stream) buffer = Buffer.concat([buffer, chunk]);
 
     // Caption fallback
-    const caption = mediaMsg?.caption || '';
+    const caption = mediaMsg?.caption || "";
 
     // Compose message
     const content =
