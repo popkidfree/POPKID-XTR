@@ -83,7 +83,7 @@ cmd({
       const emoji = emojiByCategory[cat] || '💫';
       menu += `\n\n┏━❰ ${emoji} ${toUpperStylized(cat)} ${toUpperStylized('Menu')} ❱━┓\n`;
       for (const c of categories[cat].sort()) {
-        menu += `┃ ✦ ${prefix}${c}\n`;
+        menu += `┃ ❍⁠⁠ ${prefix}${c}\n`;
       }
       menu += `┗━━━━━━━━━━━━━━━┛`;
     }
