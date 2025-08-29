@@ -86,7 +86,7 @@ cmd({
 26. Jude
 27. Revelation
 
-✨ *Vision V*`;
+✨ *POPKID XTR*`;
 
         // Image URL
         const imageUrl = "https://files.catbox.moe/tbdd5d.jpg";
