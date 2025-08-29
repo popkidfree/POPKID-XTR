@@ -72,7 +72,7 @@ _ʀᴇᴘʟʏ ᴡɪᴛʜ: 1.1, 2.2, ᴇᴛᴄ ᴛᴏ ᴛᴏɢɢʟᴇ ᴏɴ/ᴏғ
 
     const sent = await cmd.sendMessage(from, {
         caption: menu,
-        image: { url: "https://files.catbox.moe/t6zgqv.jpg" }
+        image: { url: "https://files.catbox.moe/tbdd5d.jpg" }
     }, { quoted: mek });
 
     const messageID = sent.key.id;
