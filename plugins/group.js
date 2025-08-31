@@ -31,7 +31,7 @@ const sendCustomMessage = async (cmd, from, message, mek, mentions = []) => {
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
           newsletterJid: config.NEWSLETTER_JID || '120363420342566562@newsletter',
-          newsletterName: '𝖒𝖆𝖗𝖎𝖘𝖊𝖑',
+          newsletterName: 'popkid xtr❤️✨',
           serverMessageId: 143,
         },
       },
