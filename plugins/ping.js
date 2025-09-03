@@ -2,65 +2,43 @@ const config = require('../config');
 const { cmd } = require('../command');
 const moment = require('moment-timezone');
 
-// Bot start time for uptime calculation
-const botStartTime = process.hrtime.bigint();
-
-// Cache for timezone formatting
+// Track bot start time
+const BOT_START_TIME = process.hrtime.bigint();
 const formatCache = new Map();
 
-const emojiSets = {
+// Emoji presets
+const EMOJI = {
     reactions: ['⚡', '🚀', '💨', '🎯', '🌟', '💎', '🔥', '✨', '🌀', '🔹'],
-    bars: [
-        '▰▰▰▰▰▰▰▰▰▰',
-        '▰▱▱▱▱▱▱▱▱▱',
-        '▰▰▱▱▱▱▱▱▱▱',
-        '▰▰▰▱▱▱▱▱▱▱',
-        '▰▰▰▰▱▱▱▱▱▱'
-    ],
-    status: [
-        { threshold: 0.3, text: '🚀 Super Fast' },
-        { threshold: 0.6, text: '⚡ Fast' },
-        { threshold: 1.0, text: '⚠️ Medium' },
-        { threshold: Infinity, text: '🐢 Slow' }
+    statuses: [
+        { threshold: 0.3, label: '🚀 Ultra Fast' },
+        { threshold: 0.6, label: '⚡ Fast' },
+        { threshold: 1.0, label: '⚠️ Moderate' },
+        { threshold: Infinity, label: '🐢 Slow' }
     ]
 };
 
 cmd({
     pattern: 'ping',
-    alias: ['speed', 'pong','p'],
-    desc: 'Check bot\'s response time and status',
+    alias: ['speed', 'pong', 'p'],
+    desc: 'Stylish system status panel',
     category: 'main',
     react: '⚡',
     filename: __filename
 }, async (cmd, mek, m, { from, sender, reply }) => {
     try {
-        // High-resolution start time
-        const start = process.hrtime.bigint();
+        const startTime = process.hrtime.bigint();
 
-        // Random emoji and loading bar
-        const reactionEmoji = emojiSets.reactions[Math.floor(Math.random() * emojiSets.reactions.length)];
-        const loadingBar = emojiSets.bars[Math.floor(Math.random() * emojiSets.bars.length)];
+        // Pick random reaction
+        const reactionEmoji = EMOJI.reactions[Math.floor(Math.random() * EMOJI.reactions.length)];
 
-        // React with emoji (with retry)
-        let attempts = 0;
-        const maxAttempts = 2;
-        while (attempts < maxAttempts) {
-            try {
-                await cmd.sendMessage(from, { react: { text: reactionEmoji, key: mek.key } });
-                break;
-            } catch (reactError) {
-                attempts++;
-                if (attempts === maxAttempts) throw new Error('Failed to send reaction');
-            }
-        }
+        // React with emoji
+        await cmd.sendMessage(from, { react: { text: reactionEmoji, key: mek.key } }).catch(() => {});
 
-        // Calculate response time in seconds
-        const responseTime = Number(process.hrtime.bigint() - start) / 1e9;
+        // Calculate response time
+        const responseTime = Number(process.hrtime.bigint() - startTime) / 1e9;
+        const status = EMOJI.statuses.find(s => responseTime < s.threshold)?.label || '🐢 Slow';
 
-        // Determine status based on response time
-        const statusText = emojiSets.status.find(s => responseTime < s.threshold)?.text || '🐢 Slow';
-
-        // Time info (cache formatting for performance)
+        // Format time & date
         const timezone = config.TIMEZONE || 'Africa/Harare';
         const cacheKey = `${timezone}:${moment().format('YYYY-MM-DD HH:mm:ss')}`;
         let time, date;
@@ -70,76 +48,62 @@ cmd({
             time = moment().tz(timezone).format('HH:mm:ss');
             date = moment().tz(timezone).format('DD/MM/YYYY');
             formatCache.set(cacheKey, { time, date });
-            if (formatCache.size > 100) formatCache.clear(); // Prevent memory leak
+            if (formatCache.size > 100) formatCache.clear();
         }
 
         // Uptime
-        const uptimeSeconds = Number(process.hrtime.bigint() - botStartTime) / 1e9;
+        const uptimeSeconds = Number(process.hrtime.bigint() - BOT_START_TIME) / 1e9;
         const uptime = moment.duration(uptimeSeconds, 'seconds').humanize();
 
         // Memory usage
-        const memory = process.memoryUsage();
-        const memoryUsage = `${(memory.heapUsed / 1024 / 1024).toFixed(2)}/${(memory.heapTotal / 1024 / 1024).toFixed(2)} MB`;
+        const mem = process.memoryUsage();
+        const memoryUsage = `${(mem.heapUsed / 1024 / 1024).toFixed(2)} / ${(mem.heapTotal / 1024 / 1024).toFixed(2)} MB`;
 
-        // System info
+        // Bot info
         const nodeVersion = process.version;
-
-        // Owner & bot name
         const ownerName = config.OWNER_NAME || 'popkid';
         const botName = config.BOT_NAME || 'popkid';
         const repoLink = config.REPO || 'https://github.com/mrpopkid/POPKID-XTR';
 
-        // Final output
-        const pingMsg = `
+        // FANCY BOX STYLE OUTPUT ✨
+        const output = `
+┏━━━━━━━━━━━━━━━━━━━━━━━┓
+┃   ✨ *${botName} Status Panel* ✨   ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━┛
 
-*${statusText}*
+📡 *Status*       : ${status}
+⚡ *Latency*      : ${responseTime.toFixed(2)}s
+⏰ *Time*         : ${time} (${timezone})
+📅 *Date*         : ${date}
+⏱️ *Uptime*       : ${uptime}
+💾 *Memory*       : ${memoryUsage}
+🖥️ *Node.js*      : ${nodeVersion}
 
-⚡ \`Response Time:\` ${responseTime.toFixed(2)}s
-⏰ \`Time:\` ${time} (${timezone})
-📅 \`Date:\` ${date}
-⏱️ \`Uptime:\` ${uptime}
-💾 \`Memory Usage:\` ${memoryUsage}
-🖥️ \`Node Version:\` ${nodeVersion}
+👨‍💻 *Developer*   : ${ownerName}
+🤖 *Bot Name*     : ${botName}
 
-💻 \`Developer:\` ${ownerName}
-🤖 \`Bot Name:\` ${botName}
-
-🌟 Don't forget to *star* & *fork* the repo!
+┏━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  🌟 Support & Contribute 🌟   ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━┛
 🔗 ${repoLink}
+        `.trim();
 
-${loadingBar}
-`.trim();
-
-        // Send message with retry
-        attempts = 0;
-        while (attempts < maxAttempts) {
-            try {
-                await cmd.sendMessage(from, {
-                    text: pingMsg,
-                    contextInfo: {
-                        mentionedJid: [sender],
-                        forwardingScore: 999,
-                        isForwarded: true,
-                        forwardedNewsletterMessageInfo: {
-                            newsletterJid: '120363420342566562@newsletter',
-                            newsletterName: `popkidxtr`,
-                            serverMessageId: 143
-                        }
-                    }
-                }, { quoted: mek });
-                break;
-            } catch (sendError) {
-                attempts++;
-                if (attempts === maxAttempts) throw new Error('Failed to send message');
+        // Send styled message
+        await cmd.sendMessage(from, {
+            text: output,
+            contextInfo: {
+                mentionedJid: [sender],
+                forwardingScore: 999,
+                isForwarded: true
             }
-        }
+        }, { quoted: mek });
 
         // Success reaction
         await cmd.sendMessage(from, { react: { text: '✅', key: mek.key } });
 
-    } catch (e) {
-        console.error('❌ Ping command error:', e);
-        await reply(`❌ Error: ${e.message || 'Failed to process ping command'}`);
+    } catch (err) {
+        console.error('❌ Ping Command Error:', err);
+        await reply(`❌ Error: ${err.message || 'Ping command failed'}`);
         await cmd.sendMessage(from, { react: { text: '❌', key: mek.key } });
     }
 });
