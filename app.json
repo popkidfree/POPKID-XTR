@@ -1,8 +1,8 @@
 {
-  "name": "IMMU-MD",
-  "description": "Javascript WhatsApp bot made by Iᴍᴀᴅ Aʟɪ",
+  "name": "POPKID-XTR",
+  "description": "Javascript WhatsApp bot made by Dev popkid",
   "logo": "https://i.postimg.cc/xTTgKc2W/IMG-20250801-WA0019.jpg",
-  "keywords": ["IMMU-MD"],
+  "keywords": ["POPKID-XTR"],
   "success_url": "/",
 
     "stack": "container",
@@ -16,7 +16,7 @@
     "STICKER_NAME": {
       "description": "type your sticker pack name.",
       "required": false,
-      "value": "IMMU-MD"
+      "value": "popkid xtr"
     }, 
       
     "PREFIX": {
@@ -78,27 +78,27 @@
     "AUTO_STATUS_MSG": {
       "description": "Type custom message on status reply",
       "required": true,
-      "value": "*SEEN YOUR STATUS BY IMMU-MD 🖤*"
+      "value": "*SEEN YOUR STATUS BY POPKID XTR🖤*"
    
      }, 
     
     "OWNER_NAME": {
       "description": "Type Bot Owner Name.",
       "required": false,
-      "value": "IMMU MD"
+      "value": "DEV POPKID🧸"
 }, 
 
     "OWNER_NUMBER": {
       "description": "put the owner number for bot.",
       "required": false,
-      "value": "923493114170"
+      "value": "254111385747"
 
     }, 
 
     "BOT_NAME": {
       "description": "Type here the bot name.",
       "required": false,
-      "value": "IMMU-MD"
+      "value": "POPKID XTR"
 
       }, 
 
@@ -130,7 +130,7 @@
      "DESCRIPTION": {
       "description": "add caption for menu and other",
       "required": false,
-      "value": "*© ᴘᴏᴡᴇʀᴇᴅ ʙʏ IMMU MD*"
+      "value": "*©❣️ popkid xtr ❣️*"
     },
 
       "DELETE_LINKS": {
