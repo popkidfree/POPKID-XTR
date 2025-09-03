@@ -1,20 +1,20 @@
-# Use official Node.js image
+# Use official Node.js 20 LTS (Debian-based)
 FROM node:20-buster
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the container
+# Copy dependency files (leverage Docker cache)
 COPY package*.json ./
 
-# Install the application dependencies
-RUN npm install && npm install -g pm2
+# Install dependencies (production only)
+RUN npm ci --omit=dev
 
-# Copy the rest of the application files into the container
+# Copy the rest of the project
 COPY . .
 
-# Expose the port your app will be running on
+# Expose port (Render sets $PORT automatically)
 EXPOSE 8000
 
-# Command to run the app
-CMD ["npm", "start"]
+# Use pm2-runtime to keep process alive inside container
+CMD ["npm", "run", "pm2"]
