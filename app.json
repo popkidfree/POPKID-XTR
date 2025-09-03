@@ -1,212 +1,179 @@
 {
   "name": "POPKID-XTR",
-  "description": "Javascript WhatsApp bot made by Dev popkid",
+  "description": "⚡ A modern JavaScript WhatsApp bot crafted by Dev Popkid",
   "logo": "https://i.postimg.cc/xTTgKc2W/IMG-20250801-WA0019.jpg",
-  "keywords": ["POPKID-XTR"],
+  "keywords": ["POPKID-XTR", "WhatsApp", "Bot", "Node.js"],
   "success_url": "/",
+  "stack": "heroku-24",
 
-    "stack": "container",
   "env": {
     "SESSION_ID": {
-      "description": "Put the session-id here.",
+      "description": "🔑 Your WhatsApp session ID",
       "required": true,
       "value": ""
-    },  
-    
-    "STICKER_NAME": {
-      "description": "type your sticker pack name.",
-      "required": false,
-      "value": "popkid xtr"
-    }, 
-      
-    "PREFIX": {
-      "description": "paste your bot prefix note! Don't apply null prefix.",
-      "required": false,
-      "value": "."
-    },
-    
-    "MODE": {
-      "description": "select your bot work type public-private-inbox-group.",
-      "required": false,
-      "value": "public"
-      
     },
 
-     "ANTI_DELETE": {
-      "description": "set true for show deleted messages.",
-      "required": false,
-      "value": "true"  
-    },
-    
-    "ALWAYS_ONLINE": {
-      "description": "Make it true if want always online.",
-      "required": false,
-      "value": "false"  
-    },    
-   
-    "AUTO_REPLY": {
-      "description": "Make it true if you want automatic reply.",
-      "required": false,
-      "value": "false"
-    }, 
-
-    "AUTO_STICKER": {
-      "description": "Make it true if you want automatic sticker.",
-      "required": false,
-      "value": "false"
-    }, 
-
-
-    "AUTO_STATUS_SEEN": {
-      "description": "Make it true for automatic status seen.",
-      "required": true,
-      "value": "true"
-    }, 
-
-    "AUTO_STATUS_REACT": {
-      "description": "make it true for automatic status reaction or like.",
-      "required": true,
-      "value": "true"
-    }, 
-
-    "AUTO_STATUS_REPLY": {
-      "description": "Make it true for auto reply msg on status seen.",
-      "required": true,
-      "value": "false"
-    }, 
-
-    "AUTO_STATUS_MSG": {
-      "description": "Type custom message on status reply",
-      "required": true,
-      "value": "*SEEN YOUR STATUS BY POPKID XTR🖤*"
-   
-     }, 
-    
     "OWNER_NAME": {
-      "description": "Type Bot Owner Name.",
+      "description": "👨‍💻 Bot Owner Name",
       "required": false,
       "value": "DEV POPKID🧸"
-}, 
-
+    },
     "OWNER_NUMBER": {
-      "description": "put the owner number for bot.",
+      "description": "📱 Bot Owner Number",
       "required": false,
       "value": "254111385747"
-
-    }, 
-
+    },
     "BOT_NAME": {
-      "description": "Type here the bot name.",
+      "description": "🤖 Name of your bot",
       "required": false,
       "value": "POPKID XTR"
-
-      }, 
-
-    "ANTI_LINK": {
-      "description": "Make it true if you want bot auto remove group link.",
-      "required": true,
-      "value": "true"
-      
     },
-    
-    "ANTI_BAD": {
-      "description": "Make it true if you want bot auto delete bad words.",
-      "required": false,
-      "value": "false"
-    },
-
-   "MENTION_REPLY": {
-      "description": "make it true if want mention reply if someone menetion you.",
-      "required": false,
-      "value": "false"
-    },
-    
-    "MENU_IMAGE_URL": {
-      "description": "add url for mention reply and menu if want.",
-      "required": false,
-      "value": "https://i.postimg.cc/xTTgKc2W/IMG-20250801-WA0019.jpg"
-    },
-    
-     "DESCRIPTION": {
-      "description": "add caption for menu and other",
+    "DESCRIPTION": {
+      "description": "📝 Caption for menus and info",
       "required": false,
       "value": "*©❣️ popkid xtr ❣️*"
     },
-
-      "DELETE_LINKS": {
-      "description": "remove links from group automatically without removing member",
+    "MENU_IMAGE_URL": {
+      "description": "🖼️ Image for menus & mention replies",
       "required": false,
-      "value": "false"
-    },
-    
-    "AUTO_RECORDING": {
-      "description": "Make it true if you want auto recoding.",
-      "required": false,
-      "value": "false"
+      "value": "https://i.postimg.cc/xTTgKc2W/IMG-20250801-WA0019.jpg"
     },
 
-    "AUTO_TYPING": {
-      "description": "Make it true if you want auto typing.",
+    "PREFIX": {
+      "description": "⚙️ Command prefix (don’t use null)",
       "required": false,
-      "value": "false"
+      "value": "."
+    },
+    "MODE": {
+      "description": "🌐 Bot mode: public | private | inbox | group",
+      "required": false,
+      "value": "public"
     },
 
-    "AUTO_REACT": {
-      "description": "Make it true if you want react on every message.",
+    "STICKER_NAME": {
+      "description": "🎨 Sticker pack name",
+      "required": false,
+      "value": "popkid xtr"
+    },
+
+    "ANTI_DELETE": {
+      "description": "🗑️ Show deleted messages",
+      "required": false,
+      "value": "true"
+    },
+    "ANTI_LINK": {
+      "description": "🔗 Auto-remove group links",
+      "required": true,
+      "value": "true"
+    },
+    "ANTI_BAD": {
+      "description": "🚫 Auto-delete bad words",
       "required": false,
       "value": "false"
     },
-    
-    "CUSTOM_REACT": {
-      "description": "Make it true if you want custom reactions.",
-      "required": false,
-      "value": "false"
-      
-    }, 
-    
-    "CUSTOM_REACT_EMOJIS": {
-      "description": "put here custom react react emojis.",
-      "required": false,
-      "value": "💝,💖,💗,❤️‍🩹,❤️,🧡,💛,💚,💙,💜,🤎,🖤,🤍"
-    }, 
-    
     "ANTI_DEL_PATH": {
-      "description": "change it to -same- if you want to resend deleted message in same chat othwise inbox",
+      "description": "📩 Resend deleted msgs in same chat or inbox",
       "required": false,
       "value": "inbox"
-    }, 
+    },
 
-    "ADMIN_ACTION": {
-      "description": "make it true if want know who promote or demote a member .",
+    "ALWAYS_ONLINE": {
+      "description": "🌙 Keep bot always online",
       "required": false,
       "value": "false"
     },
-
-    "WELCOME": {
-      "description": "make it true if want welcome message in groups.",
+    "AUTO_REPLY": {
+      "description": "💬 Enable auto replies",
       "required": false,
       "value": "false"
     },
-
-    "GOODBYE": {
-      "description": "make it true if want goodbye message in groups.",
+    "AUTO_STICKER": {
+      "description": "🖼️ Convert images to stickers automatically",
       "required": false,
       "value": "false"
     },
+    "AUTO_STATUS_SEEN": {
+      "description": "👀 Auto view statuses",
+      "required": true,
+      "value": "true"
+    },
+    "AUTO_STATUS_REACT": {
+      "description": "❤️ Auto react to statuses",
+      "required": true,
+      "value": "true"
+    },
+    "AUTO_STATUS_REPLY": {
+      "description": "💌 Auto reply on status seen",
+      "required": true,
+      "value": "false"
+    },
+    "AUTO_STATUS_MSG": {
+      "description": "💬 Custom message for status reply",
+      "required": true,
+      "value": "*SEEN YOUR STATUS BY POPKID XTR🖤*"
+    },
 
+    "AUTO_RECORDING": {
+      "description": "🎙️ Simulate recording",
+      "required": false,
+      "value": "false"
+    },
+    "AUTO_TYPING": {
+      "description": "⌨️ Simulate typing",
+      "required": false,
+      "value": "false"
+    },
     "READ_MESSAGE": {
-      "description": "Make it true if you want bot read your all sms just now.",
+      "description": "📖 Auto-read all messages",
+      "required": false,
+      "value": "false"
+    },
+    "AUTO_REACT": {
+      "description": "🔥 React on every message",
+      "required": false,
+      "value": "false"
+    },
+    "CUSTOM_REACT": {
+      "description": "✨ Enable custom reactions",
+      "required": false,
+      "value": "false"
+    },
+    "CUSTOM_REACT_EMOJIS": {
+      "description": "😎 List of custom emojis for reactions",
+      "required": false,
+      "value": "💝,💖,💗,❤️‍🩹,❤️,🧡,💛,💚,💙,💜,🤎,🖤,🤍"
+    },
+
+    "MENTION_REPLY": {
+      "description": "🔔 Auto reply when mentioned",
+      "required": false,
+      "value": "false"
+    },
+    "DELETE_LINKS": {
+      "description": "🧹 Remove links without kicking members",
+      "required": false,
+      "value": "false"
+    },
+    "ADMIN_ACTION": {
+      "description": "🛡️ Notify when someone is promoted/demoted",
+      "required": false,
+      "value": "false"
+    },
+    "WELCOME": {
+      "description": "🎉 Enable welcome messages in groups",
+      "required": false,
+      "value": "false"
+    },
+    "GOODBYE": {
+      "description": "👋 Enable goodbye messages in groups",
       "required": false,
       "value": "false"
     }
+  },
 
-},
-
-     "buildpacks": [
-        {
-            "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
-        }
-     ],
-  "stack": "heroku-24"
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
+    }
+  ]
 }
-  
