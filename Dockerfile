@@ -1,20 +1,14 @@
-# Use official Node.js 20 LTS (Debian-based)
-FROM node:20-buster
-
-# Set the working directory
-WORKDIR /app
-
-# Copy dependency files (leverage Docker cache)
-COPY package*.json ./
-
-# Install dependencies (production only)
-RUN npm ci --omit=dev
-
-# Copy the rest of the project
-COPY . .
-
-# Expose port (Render sets $PORT automatically)
-EXPOSE 8000
-
-# Use pm2-runtime to keep process alive inside container
-CMD ["npm", "run", "pm2"]
+FROM node:lts-buster
+USER root
+RUN apt-get update && \
+    apt-get install -y ffmpeg webp git && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+USER node
+RUN git clone https://github.com/JawadTechX/DJ /home/node/DJ
+WORKDIR /home/node/DJ
+RUN chmod -R 777 /home/node/DJ/
+RUN yarn install --network-concurrency 1
+EXPOSE 7860
+ENV NODE_ENV=production
+CMD ["npm", "start"]
